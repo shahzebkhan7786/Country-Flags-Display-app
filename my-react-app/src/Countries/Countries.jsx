@@ -9,7 +9,7 @@ export default function Countries() {
     useEffect(() => {
         const fetchCountriesData = async () => {
             try {
-                const res = await axios.get(`https://restcountries.com/v3.1/all`);
+                const res = await axios.get(`https://xcountries-backend.azurewebsites.net/all`);
                 setData(res.data);
                 setLoading(false);
             } catch (error) {
