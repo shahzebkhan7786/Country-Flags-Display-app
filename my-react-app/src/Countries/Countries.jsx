@@ -1,57 +1,117 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
-import styles from "./Countries.module.css"
+import { useEffect, useState } from "react";
 
-export default function Countries() {
-    const [data, setData] = useState([]);
-    const [loading, setLoading] = useState(true);
+const Card = ({ name, flag }) => {
+return(
+    <div
+    
+    style={{
+    
+    display:"flex",
+    
+    flexDirection: "column",
+    
+    gap:"4px",
+    
+    justifyContent: "center",
+    
+    alignItems: "center",
+    
+    height:"200px",
+    
+    width:"200px",
+    
+    border: "0.5px solid black",
+    
+    borderRadius: "5px",
+    
+    padding:"10px",
+    
+    textAlign: "center",
+    
+    }}
+    >
+    
 
-    useEffect(() => {
-        const fetchCountriesData = async () => {
-            try {
-                const res = await axios.get(`https://xcountries-backend.azurewebsites.net/all`);
-                setData(res.data);
-                setLoading(false);
-            } catch (error) {
-                console.error('Error fetching countries data:', error);
-            }
+<img
+
+src={flag}
+
+alt={'Flag of ${name}'}
+
+style={{
+
+width: "100px",
+
+height: "100px",
+
+}}
+
+/>
+
+<h2>{name}</h2>
+
+</div>
+
+);
+
+};
+    
+    
+    
+
+    
+    const API_ENDPOINT = "https://xcountries-backend.azurewebsites.net/all";
+    
+
+
+
+    export default function Countries() {
+
+        const [countries, setCountries] = useState([]);
+        
+        useEffect(() => {
+        
+        const fetchData = async ()=> {
+        
+        try {
+        
+        const res= await fetch(API_ENDPOINT);
+        
+        const jsonRes = await res.json();
+        
+        setCountries(jsonRes);
+        
+        } catch (error){
+        
+        console.error("Error fetching data: " + error);
+        
+    }
+        
         };
-
-        fetchCountriesData();
-    }, []);
-
-    return (
-        <>
-            {loading ? (
-                <p>Loading...</p>
-            ) : (
-                <>
-                <div>
-                    <h3>countries flags an thier names</h3>
-                </div>
-                    {data.length > 0 ? (
-                        <><div className={styles.card}>
-                            {data.map((country, index) => (
-                                <div key={index} >
-                                    {country.flags && country.flags.png ? (
-                                        <img 
-                                            src={country.flags.png} 
-                                            alt={`Flag of ${country.name.common}`}  
-                                            className={styles.img}
-                                        />
-                                    ) : (
-                                        <p>No flag available for this country</p>
-                                    )}
-                                    <div><h2>{country.name.common}</h2></div>
-                                </div>
-                            ))}
-                         </div>   
-                        </>
-                    ) : (
-                        <p>No data available</p>
-                    )}
-                </>
-            )}
-        </>
-    );
-}
+    
+        fetchData();
+        }, []);
+        
+        return (
+        
+        <div
+        
+        style={{
+        
+        display: "flex",
+        
+        flexWrap: "wrap",
+        
+        gap: "10px",
+        
+        }}
+        >
+        
+        {countries.map(({ name, flag, abbr}) => ( <Card name={name} flag={flag} key={abbr} />
+        
+        ))}
+        
+        </div>
+        
+        );
+    }
