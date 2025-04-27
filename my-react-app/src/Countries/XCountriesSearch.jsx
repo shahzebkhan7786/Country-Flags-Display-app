@@ -19,7 +19,7 @@ const XCountriesSearch = () => {
     // }, [searchText])
 
     const fetchCountries = async ()=>{
-        const url = "https://restcountries.com/v3.1/all"
+        const url = "https://xcountries-backend.azurewebsites.net/all"
         try{
             const res = await axios.get(url);
             
