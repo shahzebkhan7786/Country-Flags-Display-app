@@ -1,6 +1,6 @@
 
 import React, { useEffect, useState } from 'react';
-import Countries from '../Countries';
+import Countries from './Countries/Countries';
 import axios from "axios";
 // import Card from '../Card/Card';
 import "./XCountriesSearch.css";
