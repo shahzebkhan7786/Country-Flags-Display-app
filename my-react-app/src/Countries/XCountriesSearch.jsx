@@ -1,82 +1,62 @@
-
 import React, { useEffect, useState } from 'react';
-import Countries from './Countries/Countries';
-import axios from "axios";
-// import Card from '../Card/Card';
-import "./XCountriesSearch.css";
+import './XCountriesSearch.css';
+
+const API_ENDPOINT = 'https://countries-search-data-prod-812920491762.asia-south1.run.app/countries';
+
+const Card = ({ name, flag }) => {
+  return (
+    <div className="countryCard">
+      <img src={flag} alt={`Flag of ${name}`} />
+      <h2>{name}</h2>
+    </div>
+  );
+};
 
 const XCountriesSearch = () => {
-    const [data, setData] = useState([]);
-    const [searchText, setSearchText] = useState("");
-    const [filteredData, setFilteredData] = useState(null);
+  const [countries, setCountries] = useState([]);
+  const [searchText, setSearchText] = useState('');
+  const [filteredCountries, setFilteredCountries] = useState([]);
 
-    useEffect(()=>{
-        fetchCountries();
-    }, [])
+  useEffect(() => {
+    fetchCountries();
+  }, []);
 
-    // useEffect(()=>{
-        // searchCountries();
-    // }, [searchText])
-
-    const fetchCountries = async ()=>{
-        const url = "https://xcountries-backend.azurewebsites.net/all"
-        try{
-            const res = await axios.get(url);
-            
-            if (res.status !== 200) {
-                throw new Error(`${res.status} ${res.statusText}`);
-            }
-            setData(res.data)
-        }catch(error){
-            console.error(error);
-        }
-        // console.log(data);
+  const fetchCountries = async () => {
+    try {
+      const res = await fetch(API_ENDPOINT);
+      const data = await res.json();
+      setCountries(data);
+      setFilteredCountries(data);
+    } catch (error) {
+      console.error('Error fetching countries:', error);
     }
+  };
 
-    //        c
-    //I N D I A
-
-    //  i
-    //I A
-    const searchCountries = (str)=>{
-        
-        if(!str || !str.length) return setFilteredData(null);
-
-        // const filteredCountries = ;
-        setFilteredData(data.filter((country) => country.name.common.toLowerCase().includes(str.toLowerCase())))
-    }
-    const Card = (props) => {
-        const { image, name} = props;
-        return (
-            <div className='card container' style={{flexDirection: 'column'}}>
-                <img src={image} alt={`${name} flag`} />
-                <h2>{name}</h2>
-            </div>
-        );
-    };
-
-    const displayFLags = ()=>{
-        // let arr = filteredData && filteredData?.length ? filteredData : data;
-        let arr = filteredData ? filteredData : data;
-        return arr?.map(cou=> <Card key={cou?.cca3} image={cou?.flags?.png} name={cou?.name?.common}/>);
-
-    }
-
-    const handleSearch = evt=>{
-        setSearchText(evt.target.value)
-        searchCountries(evt.target.value);
-    }
-
-    return (
-        data.length &&
-        <div className='XCountriesSearch'>
-            <input  type='text' value={searchText} onChange={handleSearch}/>
-            {/* <div className='countriesBody' style={{display: "flex", flexDirection: "column", alignItems: "center"}}> */}
-            <div className='countriesBody countriesWrapper'>
-                {displayFLags()}
-            </div>
-        </div>
+  const handleSearch = (e) => {
+    const value = e.target.value.toLowerCase();
+    setSearchText(value);
+    const filtered = countries.filter((country) =>
+      country.name.toLowerCase().includes(value)
     );
+    setFilteredCountries(filtered);
+  };
+
+  return (
+    <div className="XCountriesSearch">
+      <input
+        type="text"
+        placeholder="Search for a country..."
+        value={searchText}
+        onChange={handleSearch}
+      />
+      <div className="countriesContainer">
+        {filteredCountries.map((country) => (
+          <Card key={country.abbr} name={country.name} flag={country.flag} />
+        ))}
+      </div>
+    </div>
+  );
 };
 
 export default XCountriesSearch;
+
