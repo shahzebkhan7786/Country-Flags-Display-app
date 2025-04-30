@@ -1,11 +1,7 @@
-import Countries from './Countries/Countries';
+import XCountriesSearch from './Countries/Countries';
 
 function App() {
-  return (
-    <div className="App">
-      <Countries/>
-    </div>
-  );
+  return <XCountriesSearch />;
 }
 
 export default App;
